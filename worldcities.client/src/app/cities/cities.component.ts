@@ -33,9 +33,13 @@ export class CitiesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loadData();
+  }
+
+  loadData() {
     var pageEvent = new PageEvent();
-    pageEvent.pageIndex = 0;
-    pageEvent.pageSize = 10;
+    pageEvent.pageIndex = this.defaultPageIndex;
+    pageEvent.pageSize = this.defaultPageSize;
     this.getData(pageEvent);
   }
 
@@ -43,7 +47,13 @@ export class CitiesComponent implements OnInit {
     var url = environment.baseUrl + 'api/Cities';
     var params = new HttpParams()
       .set("pageIndex", event.pageIndex.toString())
-      .set("pageSize", event.pageSize.toString());
+      .set("pageSize", event.pageSize.toString())
+      .set("sortColumn", (this.sort)
+        ? this.sort.active
+        : this.defaultSortColumn)
+      .set("sortOrder", (this.sort)
+        ? this.sort.direction
+        : this.defaultSortOrder);
     this.http.get<any>(url, { params })
       .subscribe({
         next: (result) => {

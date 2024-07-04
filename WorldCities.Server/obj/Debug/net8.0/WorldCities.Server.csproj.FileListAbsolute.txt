@@ -256,3 +256,4 @@ D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\runtimes\win\lib\net
 D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
 D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Security.Cryptography.ProtectedData.dll
 D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Windows.Extensions.dll
+D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\System.Linq.Dynamic.Core.dll
