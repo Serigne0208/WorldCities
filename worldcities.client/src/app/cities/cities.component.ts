@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit,ViewChild } from '@angular/core';
+import { HttpClient,HttpParams} from '@angular/common/http';
 import { environment } from './../../environments/environment';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator ,PageEvent} from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 import { City } from './city';
 import { Observable } from 'rxjs';
@@ -11,20 +14,46 @@ import { Observable } from 'rxjs';
   styleUrls: ['./cities.component.scss']
 })
 export class CitiesComponent implements OnInit {
-  public cities!: City[];
- // citiesObs!: Observable<City[]>
+  public displayedColumns: string[] = ['id', 'name', 'lat', 'lon'];
+  public cities!: MatTableDataSource<City>;
+  //  public cities!: City[];
+
+  defaultPageIndex: number = 0;
+  defaultPageSize: number = 10;
+  public defaultSortColumn: string = "name";
+  public defaultSortOrder: "asc" | "desc" = "asc";
+
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+ 
 
   constructor(private http: HttpClient) {
   }
 
   ngOnInit() {
-    this.http.get<City[]>(environment.baseUrl + 'api/Cities')
+    var pageEvent = new PageEvent();
+    pageEvent.pageIndex = 0;
+    pageEvent.pageSize = 10;
+    this.getData(pageEvent);
+  }
+
+  getData(event: PageEvent) {
+    var url = environment.baseUrl + 'api/Cities';
+    var params = new HttpParams()
+      .set("pageIndex", event.pageIndex.toString())
+      .set("pageSize", event.pageSize.toString());
+    this.http.get<any>(url, { params })
       .subscribe({
         next: (result) => {
-          this.cities = result;
+          this.paginator.length = result.totalCount;
+          this.paginator.pageIndex = result.pageIndex;
+          this.paginator.pageSize = result.pageSize;
+          this.cities = new MatTableDataSource<City>(result.data);        
         },
-        error: (error:Error) => console.error(error)
+        error: (error) => console.error(error)
       });
-    //this.citiesObs = this.http.get<City[]>(environment.baseUrl + 'api/Cities');
   }
+  
 }

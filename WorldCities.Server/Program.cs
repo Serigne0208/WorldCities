@@ -7,13 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers()
-     //.AddJsonOptions(options =>
-     //{
-     //    //some indentation so that we’ll be able to understand more of those outputs.
-     //    options.JsonSerializerOptions.WriteIndented = true;
-     //    //If we wanted to switch from camelCase (default) to PascalCase,
-     //    options.JsonSerializerOptions.PropertyNamingPolicy = null;
-     //})
+     .AddJsonOptions(options =>
+     {
+         //some indentation so that we’ll be able to understand more of those outputs.
+         options.JsonSerializerOptions.WriteIndented = true;
+         //If we wanted to switch from camelCase (default) to PascalCase,
+        // options.JsonSerializerOptions.PropertyNamingPolicy = null;
+     })
      ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

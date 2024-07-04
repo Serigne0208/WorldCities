@@ -1,0 +1,24 @@
+table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+  vertical-align: top;
+  border-color: #dee2e6;
+
+  th, td {
+    text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background: #F2F2F2;
+  }
+
+  tr:nth-child(odd) {
+    background: #FFF;
+  }
+
+  tbody > tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+    color: #212529;
+  }
+}

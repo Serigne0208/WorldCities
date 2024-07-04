@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "eWRyweYK00s=",
+  "dgSpecHash": "7zjVK/TQSwQ=",
   "success": true,
   "projectFilePath": "D:\\Projects\\WorldCities\\WorldCities.Server\\WorldCities.Server.csproj",
   "expectedPackageFiles": [
@@ -186,6 +186,7 @@
     "C:\\Users\\pc\\.nuget\\packages\\system.io.filesystem.primitives\\4.3.0\\system.io.filesystem.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\pc\\.nuget\\packages\\system.io.pipelines\\7.0.0\\system.io.pipelines.7.0.0.nupkg.sha512",
     "C:\\Users\\pc\\.nuget\\packages\\system.linq\\4.3.0\\system.linq.4.3.0.nupkg.sha512",
+    "C:\\Users\\pc\\.nuget\\packages\\system.linq.dynamic.core\\1.4.3\\system.linq.dynamic.core.1.4.3.nupkg.sha512",
     "C:\\Users\\pc\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\pc\\.nuget\\packages\\system.memory.data\\1.0.2\\system.memory.data.1.0.2.nupkg.sha512",
     "C:\\Users\\pc\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
