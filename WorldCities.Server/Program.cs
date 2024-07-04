@@ -1,11 +1,30 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using WorldCities.Server.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+     //.AddJsonOptions(options =>
+     //{
+     //    //some indentation so that we’ll be able to understand more of those outputs.
+     //    options.JsonSerializerOptions.WriteIndented = true;
+     //    //If we wanted to switch from camelCase (default) to PascalCase,
+     //    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+     //})
+     ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add ApplicationDbContext and SQL Server support
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+        )
+);
 
 var app = builder.Build();
 
