@@ -34,7 +34,7 @@ namespace WorldCities.Server.Controllers
             string? filterQuery = null)
         {
             // first we perform the filtering...
-            var cities = _context.Cities.AsQueryable();
+            var cities = _context.Cities.AsNoTracking();
             if (!string.IsNullOrEmpty(filterColumn) && !string.IsNullOrEmpty(filterQuery))
             {
                 cities= cities.Where(c => c.Name.StartsWith(filterQuery));
