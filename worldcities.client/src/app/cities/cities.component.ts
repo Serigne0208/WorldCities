@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { MatTableDataSource } from '@angular/material/table';
@@ -6,15 +6,18 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 
 import { City } from './city';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cities',
   templateUrl: './cities.component.html',
   styleUrls: ['./cities.component.scss']
 })
-export class CitiesComponent implements OnInit {
+export class CitiesComponent implements OnInit,OnDestroy {
+
   public displayedColumns: string[] = ['id', 'name', 'lat', 'lon'];
   public cities!: MatTableDataSource<City>;
+  private subs: Subscription[] = []
 
   defaultPageIndex: number = 0;
   defaultPageSize: number = 10;
@@ -28,6 +31,10 @@ export class CitiesComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private http: HttpClient) {
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 
   ngOnInit() {
@@ -47,12 +54,8 @@ export class CitiesComponent implements OnInit {
     var params = new HttpParams()
       .set("pageIndex", event.pageIndex.toString())
       .set("pageSize", event.pageSize.toString())
-      .set("sortColumn", (this.sort)
-        ? this.sort.active
-        : this.defaultSortColumn)
-      .set("sortOrder", (this.sort)
-        ? this.sort.direction
-        : this.defaultSortOrder);
+      .set("sortColumn", (this.sort) ? this.sort.active: this.defaultSortColumn)
+      .set("sortOrder", (this.sort)  ? this.sort.direction : this.defaultSortOrder);
 
     if (this.filterQuery) {
       params = params
@@ -60,7 +63,7 @@ export class CitiesComponent implements OnInit {
         .set("filterQuery", this.filterQuery);
     }
 
-    this.http.get<any>(url, { params })
+   this.subs.push( this.http.get<any>(url, { params })
       .subscribe({
         next: (result) => {
           this.paginator.length = result.totalCount;
@@ -69,6 +72,6 @@ export class CitiesComponent implements OnInit {
           this.cities = new MatTableDataSource<City>(result.data);
         },
         error: (error) => console.error(error)
-      });
+      }));
   }
 }

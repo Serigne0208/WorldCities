@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from './../../environments/environment';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Country } from './country';
-
+import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { Country } from './country';
   templateUrl: './countries.component.html',
   styleUrls: ['./countries.component.scss']
 })
-export class CountriesComponent implements OnInit {
+export class CountriesComponent implements OnInit,OnDestroy {
   public displayedColumns: string[] = ['id', 'name', 'iso2', 'iso3'];
   public countries!: MatTableDataSource<Country>;
 
@@ -21,7 +22,7 @@ export class CountriesComponent implements OnInit {
   defaultPageSize: number = 10;
   public defaultSortColumn: string = "name";
   public defaultSortOrder: "asc" | "desc" = "asc";
-
+  subs : Subscription[] = [];
   defaultFilterColumn: string = "name";
   filterQuery?: string;
 
@@ -29,6 +30,10 @@ export class CountriesComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private http: HttpClient) {
+  }
+
+  ngOnDestroy(): void {
+    this.subs.forEach(sub => sub.unsubscribe());
   }
 
   ngOnInit() {
@@ -60,7 +65,7 @@ export class CountriesComponent implements OnInit {
         .set("filterQuery", this.filterQuery);
     }
 
-    this.http.get<any>(url, { params })
+    this.subs.push( this.http.get<any>(url, { params })
       .subscribe({
         next: (result) => {
           this.paginator.length = result.totalCount;
@@ -69,6 +74,6 @@ export class CountriesComponent implements OnInit {
           this.countries = new MatTableDataSource<Country>(result.data);
         },
         error: (error) => console.error(error)
-      });
+      }));
   }
 }
