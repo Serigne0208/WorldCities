@@ -4,7 +4,10 @@
 
 <p *ngIf="!cities"><em>Loading...</em></p>
 
-
+<mat-form-field [hidden]="!cities">
+  <input matInput #filter (keyup)="loadData(filter.value)"
+         placeholder="Filter by name (or part of it)...">
+</mat-form-field>
 
 <table mat-table [dataSource]="cities"
        class="mat-elevation-z8"
