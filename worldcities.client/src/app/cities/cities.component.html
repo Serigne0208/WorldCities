@@ -10,7 +10,7 @@
 </button>
 
 <mat-form-field [hidden]="!cities">
-  <input matInput #filter (keyup)="loadData(filter.value)"
+  <input matInput #filter (keyup)="onFilterTextChanged(filter.value)"
          placeholder="Filter by name (or part of it)...">
 </mat-form-field>
 
