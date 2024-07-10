@@ -19,7 +19,7 @@ import { City } from './city';
 })
 export class CitiesComponent implements OnInit,OnDestroy {
 
-  public displayedColumns: string[] = ['id', 'name', 'lat', 'lon'];
+  public displayedColumns: string[] = ['id', 'name', 'lat', 'lon', 'countryName'];
   public cities!: MatTableDataSource<City>;
   private subs: Subscription[] = []
 
