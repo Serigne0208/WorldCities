@@ -4,10 +4,12 @@ import { environment } from './../../environments/environment';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Country } from './country';
+
 import { Observable } from 'rxjs';
 import { Subscription } from 'rxjs';
 
+import { Country } from './country';
+import { CountryService } from './country.service';
 
 @Component({
   selector: 'app-countries',
@@ -29,7 +31,8 @@ export class CountriesComponent implements OnInit,OnDestroy {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private http: HttpClient) {
+  constructor( private http: HttpClient,
+               private countryService: CountryService ) {
   }
 
   ngOnDestroy(): void {
@@ -49,6 +52,40 @@ export class CountriesComponent implements OnInit,OnDestroy {
   }
 
   getData(event: PageEvent) {
+    var sortColumn = (this.sort)
+      ? this.sort.active
+      : this.defaultSortColumn;
+
+    var sortOrder = (this.sort)
+      ? this.sort.direction
+      : this.defaultSortOrder;
+
+    var filterColumn = (this.filterQuery)
+      ? this.defaultFilterColumn
+      : null;
+
+    var filterQuery = (this.filterQuery)
+      ? this.filterQuery
+      : null;
+
+    this.countryService.getData(
+      event.pageIndex,
+      event.pageSize,
+      sortColumn,
+      sortOrder,
+      filterColumn,
+      filterQuery)
+      .subscribe({
+        next: (result) => {
+          this.paginator.length = result.totalCount;
+          this.paginator.pageIndex = result.pageIndex;
+          this.paginator.pageSize = result.pageSize;
+          this.countries = new MatTableDataSource<Country>(result.data);
+        },
+        error: (error) => console.error(error)
+      });
+  }
+  getData1(event: PageEvent) {
     var url = environment.baseUrl + 'api/Countries';
     var params = new HttpParams()
       .set("pageIndex", event.pageIndex.toString())
@@ -76,4 +113,6 @@ export class CountriesComponent implements OnInit,OnDestroy {
         error: (error) => console.error(error)
       }));
   }
+
+
 }
