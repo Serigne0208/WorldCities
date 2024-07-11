@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
+import { map, takeUntil } from 'rxjs/operators';
+import { Observable, Subscription, Subject } from 'rxjs';
 import { environment } from './../../environments/environment';
 import { BaseFormComponent } from '../base-form.component';
 
@@ -18,7 +18,7 @@ import { CityService } from './city.service';
   templateUrl: './city-edit.component.html',
   styleUrls: ['./city-edit.component.scss']
 })
-export class CityEditComponent extends BaseFormComponent implements OnInit {
+export class CityEditComponent extends BaseFormComponent implements OnInit, OnDestroy {
 
   // the view title
   title?: string;
@@ -29,14 +29,22 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
   // the city object to edit or create
   city?: City;
 
+
   // the city object id, as fetched from the active route:
   // It's NULL when we're adding a new city,
   // and not NULL when we're editing an existing one.
   id?: number;
 
   // the countries array for the select
-  countries?: Country[];
+ // countries?: Country[];
+  // the countries observable for the select (using async pipe)
+  countries?: Observable<Country[]>;
 
+  // Activity Log (for debugging purposes)
+  activityLog: string = '';
+
+  private subscriptions: Subscription = new Subscription();
+  private destroySubject = new Subject();
   constructor(
     private activatedRoute: ActivatedRoute,
     private router: Router,
@@ -53,7 +61,48 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
       countryId: new FormControl('', Validators.required)
     }, null, this.isDupeCity());
 
+    // react to form changes
+    this.subscriptions.add(this.form.valueChanges
+     // .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Form Model has been loaded.");
+        }
+        else {
+          this.log("Form was updated by the user.");
+        }
+      }));
+
+    // react to changes in the form.name control
+    this.subscriptions.add(this.form.get("name")!.valueChanges
+     // .pipe(takeUntil(this.destroySubject))
+      .subscribe(() => {
+        if (!this.form.dirty) {
+          this.log("Name has been loaded with initial values.");
+        }
+        else {
+          this.log("Name was updated by the user.");
+        }
+      }));
+
     this.loadData();
+  }
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+    // emit a value with the takeUntil notifier
+   // this.destroySubject.next(true);
+    // complete the subject
+    //this.destroySubject.complete();
+  }
+ 
+
+  log(str: string) {
+    //this.activityLog += "["
+    //  + new Date().toLocaleString()
+    //  + "] " + str + "<br />";
+    console.log("["
+      + new Date().toLocaleString()
+      + "] " + str);
   }
 
   loadData() {
@@ -97,18 +146,22 @@ export class CityEditComponent extends BaseFormComponent implements OnInit {
     //  .set("sortColumn", "name");
 
     //this.http.get<any>(url, { params })
-    this.cityService.getCountries(
-      0,
-      9999,
-      "name",
-      "asc",
-      null,
-      null).subscribe({
-        next: (result) => {
-          this.countries = result.data;
-      },
-      error: (error) => console.error(error)
-    });
+    //.subscribe({
+    //  next: (result) => {
+    //    this.countries = result.data;
+    //  },
+    //  error: (error) => console.error(error)
+    //});
+
+    this.countries = this.cityService
+      .getCountries(
+        0,
+        9999,
+        "name",
+        "asc",
+        null,
+        null)
+      .pipe(map(x => x.data));
   }
 
   onSubmit() {
