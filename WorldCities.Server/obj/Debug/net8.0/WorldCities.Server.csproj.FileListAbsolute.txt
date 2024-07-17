@@ -296,3 +296,5 @@ D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\Serilog.Sinks.Debug.
 D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\Serilog.Sinks.File.dll
 D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\Serilog.Sinks.MSSqlServer.dll
 D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\Serilog.Sinks.PeriodicBatching.dll
+D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\Projects\WorldCities\WorldCities.Server\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
