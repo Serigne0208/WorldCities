@@ -21,7 +21,7 @@ namespace WorldCities.Server.Controllers
         {
             _context = context;
         }
-
+       
         // GET: api/Cities
         // GET: api/Cities/?pageIndex=0&pageSize=10
         // GET: api/Cities/?pageIndex=0&pageSize=10&sortColumn=name&sortOrder=asc
@@ -58,6 +58,7 @@ namespace WorldCities.Server.Controllers
                     filterQuery);
         }
 
+       
         // GET: api/Cities/5
         [HttpGet("{id}")]
         public async Task<ActionResult<City>> GetCity(int id)
