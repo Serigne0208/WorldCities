@@ -23,6 +23,8 @@
     "@angular/platform-browser": "17.0.3",
     "@angular/platform-browser-dynamic": "17.0.3",
     "@angular/router": "17.0.3",
+    "@angular/service-worker": "17.0.3",
+    "ng-connection-service": "15.0.0",
     "jest-editor-support": "*",
     "run-script-os": "*",
     "rxjs": "~7.8.0",

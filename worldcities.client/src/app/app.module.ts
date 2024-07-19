@@ -1,5 +1,5 @@
 import { HttpClientModule,HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -19,7 +19,8 @@ import { CountryEditComponent } from './countries/country-edit.component';
 import { CityService } from './cities/city.service';
 import { LoginComponent } from './auth/login.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
-
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { ConnectionServiceModule } from 'ng-connection-service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +37,14 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     ReactiveFormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    AngularMaterialModule
+    AngularMaterialModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
+    ConnectionServiceModule
   ],
   providers: [
     {
