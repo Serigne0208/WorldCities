@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using WorldCities.Server.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using WorldCities.Server.Data.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -74,6 +75,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddScoped<JwtHandler>();
 
+//add GraphQL
+builder.Services.AddGraphQLServer()
+ .AddAuthorization()
+ .AddQueryType<Query>()
+ .AddMutationType<Mutation>()
+ .AddFiltering()
+ .AddSorting();
 // Add Authentication services & middlewares
 builder.Services.AddAuthentication(opt =>
 {
@@ -119,6 +127,8 @@ app.UseCors("AngularPolicy");
 
 app.MapIdentityApi<IdentityUser>();
 app.MapControllers();
+
+app.MapGraphQL("/api/graphql");
 
 app.MapMethods("/api/heartbeat", new[] { "HEAD" },
  () => Results.Ok());

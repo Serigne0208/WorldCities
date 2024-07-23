@@ -35,7 +35,7 @@ namespace WorldCities.Server.Controllers
             if (!_env.IsDevelopment())
                 throw new SecurityException("Not allowed");
 
-            var path = Path.Combine(
+            var path = System.IO.Path.Combine(
                 _env.ContentRootPath,
                 "Data/Source/worldcities.xlsx");
 
