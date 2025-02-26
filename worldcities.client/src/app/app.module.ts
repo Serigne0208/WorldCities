@@ -20,7 +20,8 @@ import { CityService } from './cities/city.service';
 import { LoginComponent } from './auth/login.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { ConnectionServiceModule } from 'ng-connection-service';
+import { ConnectionServiceModule } from 'ng-connection-service';
+
 @NgModule({
   declarations: [
     AppComponent,

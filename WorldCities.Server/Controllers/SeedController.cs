@@ -200,6 +200,35 @@ namespace WorldCities.Server.Controllers
                 addedUserList.Add(user_Admin);
             }
 
+
+            // check if the admin user already exists
+            var email_Saliou= "saliousow0208@gmail.com";
+
+            if (await _userManager.FindByNameAsync(email_Saliou) == null)
+            {
+                // create a new admin ApplicationUser account
+                var saliou_Admin = new ApplicationUser()
+                {
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    UserName = email_Saliou,
+                    Email = email_Saliou,
+                };
+
+                // insert the admin user into the DB
+                await _userManager.CreateAsync(saliou_Admin, _configuration["DefaultPasswords:SaliouAdmin"]);
+
+                // assign the "RegisteredUser" and "Administrator" roles
+                await _userManager.AddToRoleAsync(saliou_Admin, role_RegisteredUser);
+                await _userManager.AddToRoleAsync(saliou_Admin, role_Administrator);
+
+                // confirm the e-mail and remove lockout
+                saliou_Admin.EmailConfirmed = true;
+                saliou_Admin.LockoutEnabled = false;
+
+                // add the admin user to the added users list
+                addedUserList.Add(saliou_Admin);
+            }
+
             // check if the standard user already exists
             var email_User = "userSaliou@email.com";
             if (await _userManager.FindByNameAsync(email_User) == null)
@@ -225,6 +254,8 @@ namespace WorldCities.Server.Controllers
                 // add the standard user to the added users list
                 addedUserList.Add(user_User);
             }
+
+
 
             // if we added at least one user, persist the changes into the DB
             if (addedUserList.Count > 0)

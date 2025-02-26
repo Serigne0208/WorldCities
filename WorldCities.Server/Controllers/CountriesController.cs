@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
@@ -139,11 +140,14 @@ namespace WorldCities.Server.Controllers
               string fieldName,
               string fieldValue)
         {
+            if (string.IsNullOrEmpty(fieldValue)) return false;
+
             switch (fieldName)
             {
+
                 case "name":
                     return _context.Countries.Any(
-                    c => c.Name == fieldValue && c.Id != countryId);
+                    c => c.Name.ToLower() == fieldValue.ToLower() && c.Id != countryId);
                 case "iso2":
                     return _context.Countries.Any(
                         c => c.ISO2 == fieldValue && c.Id != countryId);
@@ -152,6 +156,7 @@ namespace WorldCities.Server.Controllers
                     c => c.ISO3 == fieldValue && c.Id != countryId);
                 default:
                     return false;
+                  
             }
 
             // Alternative approach (using System.Linq.Dynamic.Core)
@@ -163,7 +168,37 @@ namespace WorldCities.Server.Controllers
             //: false;
         }
 
+        //[HttpPost]
+        //[Route("IsDupeField")]
+        //public IActionResult IsDupeField([FromBody] IsDupeFieldDto dto)
+        //{
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
 
+        //    bool isDuplicate = dto.FieldName switch
+        //    {
+        //        "name" => _context.Countries.Any(c => c.Name == dto.FieldValue && c.Id != dto.CountryId),
+        //        "iso2" => _context.Countries.Any(c => c.ISO2 == dto.FieldValue && c.Id != dto.CountryId),
+        //        "iso3" => _context.Countries.Any(c => c.ISO3 == dto.FieldValue && c.Id != dto.CountryId),
+        //        _ => false
+        //    };
+
+        //    return Ok(isDuplicate);
+        //}
+
+        //public class IsDupeFieldDto
+        //{
+        //    [Required]
+        //    public int CountryId { get; set; }
+
+        //    [Required]
+        //    [RegularExpression("^(name|iso2|iso3)$", ErrorMessage = "Invalid field name.")]
+        //    public string FieldName { get; set; } = string.Empty;
+
+        //    [Required]
+        //    [StringLength(100, ErrorMessage = "Field value is too long.")]
+        //    public string FieldValue { get; set; } = string.Empty;
+        //}
 
     }
 }

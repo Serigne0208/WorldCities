@@ -10,6 +10,7 @@ using WorldCities.Server.Data.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using WorldCities.Server.Data.GraphQL;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,15 +42,36 @@ builder.Services.AddControllers()
      ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter 'Bearer' [space] and then your valid token."
+    });
 
-builder.Services.AddCors(options =>
-    options.AddPolicy(name: "AngularPolicy",
-        cfg => {
-            cfg.AllowAnyHeader();
-            cfg.AllowAnyMethod();
-            cfg.WithOrigins(builder.Configuration["AllowedCORS"]!);
-        }));
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
+
+
+
 
 
 // Add ApplicationDbContext and SQL Server support
@@ -82,7 +104,9 @@ builder.Services.AddGraphQLServer()
  .AddMutationType<Mutation>()
  .AddFiltering()
  .AddSorting();
+
 // Add Authentication services & middlewares
+
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -102,6 +126,16 @@ builder.Services.AddAuthentication(opt =>
     };
 }).AddBearerToken(IdentityConstants.BearerScheme);
 
+builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+    options.AddPolicy(name: "AngularPolicy",
+        cfg => {
+            cfg.AllowAnyHeader();
+            cfg.AllowAnyMethod();
+            cfg.WithOrigins(builder.Configuration["AllowedCORS"]!);
+        }));
+
 
 var app = builder.Build();
 //we need to add the UseSerilogRequestLogging middleware
@@ -119,10 +153,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AngularPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseCors("AngularPolicy");
+
 
 
 app.MapIdentityApi<IdentityUser>();

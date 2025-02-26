@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WorldCities.Server.Data;
 using WorldCities.Server.Data.Models;
+using Serilog;
 
 namespace WorldCities.Server.Controllers
 {
@@ -61,8 +63,14 @@ namespace WorldCities.Server.Controllers
        
         // GET: api/Cities/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<ActionResult<City>> GetCity(int id)
         {
+            var user = HttpContext.User;
+            var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
+            Console.WriteLine($"User Roles: {string.Join(", ", roles)}");
+            Log.Information($"User Roles: {string.Join(", ", roles)}");
+
             var city = await _context.Cities.FindAsync(id);
 
             if (city == null)
@@ -79,6 +87,11 @@ namespace WorldCities.Server.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCity(int id, City city)
         {
+            var user = HttpContext.User;
+            var roles = user.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
+            Console.WriteLine($"User Roles: {string.Join(", ", roles)}");
+            Log.Information($"User Roles: {string.Join(", ", roles)}");
+
             if (id != city.Id)
             {
                 return BadRequest();
@@ -118,7 +131,7 @@ namespace WorldCities.Server.Controllers
         }
 
         // DELETE: api/Cities/5
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator,RegisteredUser")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
@@ -144,7 +157,7 @@ namespace WorldCities.Server.Controllers
         public bool IsDupeCity(City city)
         {
             return _context.Cities.AsNoTracking().Any(
-            e => e.Name == city.Name
+            e => e.Name.Trim().ToLower() == city.Name.Trim().ToLower()
             && e.Lat == city.Lat
             && e.Lon == city.Lon
             && e.CountryId == city.CountryId
