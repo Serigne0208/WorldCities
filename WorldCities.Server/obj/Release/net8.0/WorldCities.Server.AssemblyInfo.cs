@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WorldCities.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d762e402d7b4fd5381c54b488384b81798170d17")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d46eb08879fb5eeb2cd2ca1feaf52b02e7fd1499")]
 [assembly: System.Reflection.AssemblyProductAttribute("WorldCities.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WorldCities.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
